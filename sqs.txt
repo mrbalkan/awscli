@@ -1,0 +1,48 @@
+CREATE QUEUE:
+
+aws sqs create-queue --queue-name TestQueue --attributes file://sqs_attributes.txt
+
+Attributes:
+{
+  "DelaySeconds":"0",
+  "MessageRetentionPeriod": "259200",
+  "VisibilityTimeout": "30",
+  "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":\"1000\"}"
+}
+
+//RedrivePolicy defines how many times the message can come back from the client (visibility time expires for that client, rejected(not deleted, skipped) because malformed)
+before the message is forwarded to the DLQ.
+
+CREATE FIFO QUEUE:
+
+aws sqs create-queue --queue-name DLXFifoQueue.fifo --attributes file://sqs_dlx_fifo_attributes.txt
+
+{
+  "DelaySeconds":"0",
+  "MessageRetentionPeriod": "259200",
+  "VisibilityTimeout": "30",
+  "FifoQueue":"true"
+}
+aws sqs get-queue-attributes --queue-url https://queue.amazonaws.com/1234/DLXFifoQueue.fifo --attribute-names All
+
+aws sqs create-queue --queue-name FifoQueue.fifo --attributes file://sqs_fifo_attributes.txt
+
+{
+  "DelaySeconds":"0",
+  "MessageRetentionPeriod": "259200",
+  "VisibilityTimeout": "30",
+  "FifoQueue":"true",
+  "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:1234:DLXFifoQueue.fifo\",\"maxReceiveCount\":\"1000\"}"
+}
+
+PUBLISH MESSAGE:
+aws sqs send-message --queue-url https://queue.amazonaws.com/1234/TestQueue --message-body "Here is the message payload." --delay-seconds 1
+
+PURGE QUEUE:
+aws sqs purge-queue --queue-url  https://queue.amazonaws.com/1234/TestQueue
+
+DELETE QUEUE:
+aws sqs delete-queue --queue-url https://queue.amazonaws.com/1234/TestQueue
+
+LIST QUEUES:
+aws sqs list-queues
