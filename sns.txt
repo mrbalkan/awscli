@@ -1,0 +1,26 @@
+Create SNS Topic:
+aws sns create-topic --name notifications
+
+Subscribe To SNS Topic:
+  Email:
+  aws sns subscribe --topic-arn arn:aws:sns:us-east-1:12345:notifications --protocol email --notification-endpoint abc@amazon.com
+
+  HTTPS:
+   aws sns subscribe --topic-arn arn:aws:sns:us-east-1:12345:notifications --protocol http --notification-endpoint http://www.abc.com
+
+  SMS:
+   aws sns subscribe --topic-arn arn:aws:sns:us-east-1:12345:notifications --protocol sms --notification-endpoint +111111111
+
+  SQS/Lambda:
+   aws sns subscribe --topic-arn arn:aws:sns:us-east-1:12345:notifications --protocol sqs --notification-endpoint sqs/lambda_ARN
+
+List Subscriptions :
+  aws sns list-subscriptions
+  aws sns list-subscriptions-by-topic --topic-arn arn:aws:sns:us-east-1:12345:notifications
+
+Delete a Topic:
+aws sns delete-topic --topic-arn arn:aws:sns:us-east-1:12345:notifications
+
+Publish Message:
+aws sns publish --topic-arn "arn:aws:sns:us-east-1:12345:notifications" --message file://message.txt
+aws sns publish --topic-arn "arn:aws:sns:us-east-1:12345:notifications" --message "hello world"
